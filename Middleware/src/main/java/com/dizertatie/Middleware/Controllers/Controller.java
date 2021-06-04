@@ -9,13 +9,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @FluidIO
 @RestController
-class Controller
+class Controller implements ControllerWithValue<String>
 {
     @Autowired
     private Environment env;
+    
+    private String value;
 
     @RequestMapping("/test")
     String test() {
-        return env.getProperty("middleware.server");
+        return env.getProperty("middleware.server") + value;
     }
+
+	@Override
+	public void setValue(String value) {
+        this.value = value;
+	}
 }
