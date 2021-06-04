@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
     value = "middleware.type",
     havingValue = "SERVLET"
 )
-class TomcatController
+public class TomcatController extends AbstractController
 {
     @GetMapping("/test1")
     String test() {
-        return "Tomcat";
+        return super._test().block();
     }
 }
