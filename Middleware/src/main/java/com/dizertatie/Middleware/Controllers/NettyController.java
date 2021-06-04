@@ -4,10 +4,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-class TomcatController
+class NettyController
 {
-    @RequestMapping("/test_tomcat")
+    @RequestMapping("/test_netty")
     String test() {
-        return "Tomcat";
+        return "Netty";
     }
 }

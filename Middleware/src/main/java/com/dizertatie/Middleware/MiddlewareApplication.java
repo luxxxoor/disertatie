@@ -9,10 +9,16 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 public class MiddlewareApplication {
 
 	public static void main(String[] args) {
-        SpringApplicationBuilder builder = new SpringApplicationBuilder(MiddlewareApplication.class);
+        var tomcatBuilder = makeBuilder(8080, MiddlewareApplication.class).web(WebApplicationType.SERVLET);
+        var nettyBuilder = makeBuilder(8081, MiddlewareApplication.class).web(WebApplicationType.REACTIVE);
 
-        builder.web(WebApplicationType.SERVLET);
-        builder.run(args);
+        tomcatBuilder.run(args);
+        nettyBuilder.run(args);
 	}
 
+    private static SpringApplicationBuilder makeBuilder(Integer port, Class<?>... sources) {
+        return new SpringApplicationBuilder(MiddlewareApplication.class)
+            .child(sources)
+            .properties(String.format("server.port=%d", port));
+    }
 }
