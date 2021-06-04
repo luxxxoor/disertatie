@@ -1,13 +1,15 @@
 package com.dizertatie.Middleware;
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @SpringBootApplication
 public class MiddlewareApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MiddlewareApplication.class, args);
+        SpringApplicationBuilder builder = new SpringApplicationBuilder(MiddlewareApplication.class);
+
+        builder.run(args);
 	}
 
 }
