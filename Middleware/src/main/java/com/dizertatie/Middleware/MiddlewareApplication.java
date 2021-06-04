@@ -14,6 +14,7 @@ public class MiddlewareApplication {
                 .properties("middleware.server=SERVLET")
                 .web(WebApplicationType.SERVLET)
                 .run(args);
+
         new SpringApplicationBuilder(MiddlewareApplication.class)
                 .properties("server.port=8081")
                 .properties("middleware.server=REACTIVE")
