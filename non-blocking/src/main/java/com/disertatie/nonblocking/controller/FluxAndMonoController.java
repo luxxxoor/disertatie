@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -60,5 +61,27 @@ public class FluxAndMonoController {
                     System.out.println("[test3] Finished: " + c);
                    return x;
                 });
+    }
+
+    @GetMapping(value = "/test4")
+    public Mono<ResponseEntity<BigInteger>> test4(@RequestParam Integer m, @RequestParam Integer n, @RequestParam String ip) {
+        System.out.println("[test4] Started: " + counter);
+        int c = counter;
+        counter += 1;
+
+        return Mono.just(Algorithms.ack(m, n))
+                .flatMap((result) -> callSecondServer(result, ip))
+                .map((response) -> new ResponseEntity<>(response, OK))
+                .map((x)-> {
+                    System.out.println("[test4] Finished: " + c);
+                    return x;
+                });
+    }
+
+    private Mono<BigInteger> callSecondServer(BigInteger ackermannResponse, String ip) {
+        WebClient webClient = WebClient.create("http://" + ip + ":8081");
+        String uri = "/test3/?m=" + ackermannResponse.mod(BigInteger.valueOf(3)) +
+                "&n=" + ackermannResponse.mod(BigInteger.valueOf(10));
+        return webClient.get().uri(uri).retrieve().bodyToMono(BigInteger.class);
     }
 }
