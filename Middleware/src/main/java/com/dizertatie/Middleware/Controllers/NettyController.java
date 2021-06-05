@@ -1,18 +1,20 @@
 package com.dizertatie.Middleware.Controllers;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @ConditionalOnProperty(
     value = "middleware.type",
     havingValue = "REACTIVE"
 )
-class NettyController
+public class NettyController extends AbstractController
 {
-    @RequestMapping("/test_separated")
-    String test() {
-        return "Netty";
+    @GetMapping("/test1")
+    Mono<String> test() {
+        return super._test();
     }
 }

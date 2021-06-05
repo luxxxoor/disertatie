@@ -1,6 +1,7 @@
 package com.dizertatie.Middleware.Controllers;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
     value = "middleware.type",
     havingValue = "SERVLET"
 )
-class TomcatController
+public class TomcatController extends AbstractController
 {
-    @RequestMapping("/test_separated")
+    @GetMapping("/test1")
     String test() {
-        return "Tomcat";
+        return super._test().block();
     }
 }
