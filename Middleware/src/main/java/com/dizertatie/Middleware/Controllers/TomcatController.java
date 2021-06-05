@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 class TomcatController
 {
-    @RequestMapping("/test")
+    @RequestMapping("/test_separated")
     String test() {
         return "Tomcat";
     }

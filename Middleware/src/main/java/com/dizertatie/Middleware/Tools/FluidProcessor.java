@@ -7,6 +7,7 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
 @SupportedAnnotationTypes("FluidIO")
@@ -14,8 +15,12 @@ import javax.lang.model.element.TypeElement;
 class FluidProcessor extends AbstractProcessor {
 
 	@Override
-	public boolean process(Set<? extends TypeElement> arg0, RoundEnvironment arg1) {
-		// TODO Auto-generated method stub
+	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+
+        for (Element e : roundEnv.getElementsAnnotatedWith(FluidIO.class)) {
+            e.getClass().getDeclaredFields(ANNOTATIONS);
+        }
+
 		return true;
 	}
 
