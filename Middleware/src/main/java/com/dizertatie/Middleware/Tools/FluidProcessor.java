@@ -16,12 +16,7 @@ class FluidProcessor extends AbstractProcessor {
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
-        for (Element e : roundEnv.getElementsAnnotatedWith(FluidIO.class)) {
-            e.getClass().getDeclaredFields(ANNOTATIONS);
-        }
-
-		return true;
+        return true;
 	}
 
 }
