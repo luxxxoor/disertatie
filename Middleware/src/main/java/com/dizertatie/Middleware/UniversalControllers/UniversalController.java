@@ -1,5 +1,6 @@
 package com.dizertatie.Middleware.UniversalControllers;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 
 @RestController
+@ConditionalOnMissingBean(ReverseProxy.class)
 public
 class UniversalController
 {

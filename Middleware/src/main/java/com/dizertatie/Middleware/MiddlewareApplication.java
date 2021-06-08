@@ -1,36 +1,16 @@
 package com.dizertatie.Middleware;
 
-import com.dizertatie.Middleware.Tools.FluidIO;
-import lombok.SneakyThrows;
-import net.bytebuddy.ByteBuddy;
-import net.bytebuddy.description.annotation.AnnotationDescription;
-import net.bytebuddy.dynamic.loading.ClassLoadingStrategy;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.SystemPropertyUtils;
-import com.dizertatie.Middleware.UniversalControllers.*;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @SpringBootApplication(exclude = SpringDataWebAutoConfiguration.class)
 public class MiddlewareApplication {
-
-    @SneakyThrows
     public static void main(String[] args) {
+        var reverseProxyBuilder = makeBuilder(8083, MiddlewareApplication.class)
+                .properties("middleware.type=REVERSE_PROXY")
+                .web(WebApplicationType.SERVLET);
         var tomcatBuilder = makeBuilder(8080, MiddlewareApplication.class)
                 .properties("middleware.type=SERVLET")
                 .web(WebApplicationType.SERVLET);
@@ -41,6 +21,7 @@ public class MiddlewareApplication {
 
         tomcatBuilder.run(args);
         nettyBuilder.run(args);
+        reverseProxyBuilder.run(args);
     }
 
     private static SpringApplicationBuilder makeBuilder(Integer port, Class<?>... sources) {
