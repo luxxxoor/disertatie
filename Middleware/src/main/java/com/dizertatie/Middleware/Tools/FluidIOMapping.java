@@ -27,5 +27,11 @@ public class FluidIOMapping {
         return obj;
     }
 
+    public static <T> Mono<T> fluidCeva(Mono<T> blockingObj, Mono<T> nonblockingObj) {
+        if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
+            return Mono.just(blockingObj.block());
+        }
+        return nonblockingObj;
+    }
 //    TODO: Create fluidMapping with 2 different approaches on blocking and non-blocking
 }
