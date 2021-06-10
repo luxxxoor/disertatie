@@ -27,7 +27,7 @@ public class FluidIOMapping {
         return obj;
     }
 
-    public static <T> Mono<T> fluidSwich(Mono<T> blockingObj, Mono<T> nonblockingObj) {
+    public static <T> Mono<T> fluidSwitch(Mono<T> blockingObj, Mono<T> nonblockingObj) {
         if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
             return Mono.just(blockingObj.block());
         }
