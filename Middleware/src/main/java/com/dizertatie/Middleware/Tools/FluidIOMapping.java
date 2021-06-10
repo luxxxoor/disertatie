@@ -20,14 +20,14 @@ public class FluidIOMapping {
         environment = autowiredEnvironment;
     }
 
-    public static <T> Mono<T> fluidMap(Mono<T> obj) {
+    public static <T> Mono<T> fluidHandle(Mono<T> obj) {
         if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
             return Mono.just(obj.block());
         }
         return obj;
     }
 
-    public static <T> Mono<T> fluidCeva(Mono<T> blockingObj, Mono<T> nonblockingObj) {
+    public static <T> Mono<T> fluidSwitch(Mono<T> blockingObj, Mono<T> nonblockingObj) {
         if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
             return Mono.just(blockingObj.block());
         }
