@@ -26,7 +26,7 @@ public class FluidIOMapping {
         }
         return obj;
     }
-
+//  TODO: Return functions instead of monos ?
     public static <T> Mono<T> fluidSwitch(Mono<T> blockingObj, Mono<T> nonblockingObj) {
         if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
             return Mono.just(blockingObj.block());
