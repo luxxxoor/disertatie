@@ -7,6 +7,7 @@ import reactor.core.publisher.Mono;
 
 import javax.annotation.PostConstruct;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 @Component
 public class FluidIOMapping {
@@ -26,12 +27,12 @@ public class FluidIOMapping {
         }
         return obj;
     }
-//  TODO: Return functions instead of monos ?
-    public static <T> Mono<T> fluidSwitch(Mono<T> blockingObj, Mono<T> nonblockingObj) {
+
+    public static <T> Mono<T> fluidSwitch(Supplier<T> onBlocking, Supplier<Mono<T>> onNonblocking) {
         if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
-            return Mono.just(blockingObj.block());
+            return Mono.just(onBlocking.get());
         }
-        return nonblockingObj;
+        return onNonblocking.get();
     }
 //    TODO: Create fluidMapping with 2 different approaches on blocking and non-blocking
 }
