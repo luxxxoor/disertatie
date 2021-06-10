@@ -1,15 +1,12 @@
 package com.dizertatie.Middleware.UniversalControllers;
 
-import com.dizertatie.Middleware.Tools.FluidIOMapping;
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
-
-import static com.dizertatie.Middleware.Tools.FluidIOMapping.fluidMap;
+import static com.dizertatie.Middleware.Tools.FluidIOMapping.fluidHandle;
 
 @RestController
 public class UniversalController
@@ -21,6 +18,6 @@ public class UniversalController
     Mono<String> test() {
         Mono<String> mono = Mono.just(env.getProperty("middleware.type"));
 
-        return fluidMap(mono);
+        return fluidHandle(mono);
     }
 }
