@@ -1,8 +1,8 @@
 package com.disertatie.blocking.Rest;
 
+import com.disertatie.blocking.Repository.DBRepository;
 import com.disertatie.blocking.algorithms.Algorithms;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.OK;
 
 @Controller
 public class RestController {
+    @Autowired
+    private DBRepository repository;
+
     static Integer counter = 0;
 
     @GetMapping("/test1")
@@ -76,12 +80,18 @@ public class RestController {
                 });
     }
 
+    @GetMapping("/test5")
+    public CompletableFuture<ResponseEntity<List<String>>> test5(@RequestParam(name = "country") String countryName) {
+        return CompletableFuture.supplyAsync(() -> repository.findOneByName(countryName))
+                .thenApply((country) -> country.cities.stream().map((city) -> city.name).collect(Collectors.toList()))
+                .thenApply((cities) -> new ResponseEntity<>(cities, OK));
+    }
+
     @Async
     private CompletableFuture<BigInteger> callSecondServer(BigInteger ackermannResponse, String ip) {
         RestTemplate restTemplate = new RestTemplate();
-        //TODO: Test with mod%4 and mpd%11
-        String url = "http://" + ip + ":8080/test3/?m=" + ackermannResponse.mod(BigInteger.valueOf(3)) +
-                "&n=" + ackermannResponse.mod(BigInteger.valueOf(10));
+        String url = "http://" + ip + ":8080/test3/?m=" + ackermannResponse.mod(BigInteger.valueOf(4)) +
+                "&n=" + ackermannResponse.mod(BigInteger.valueOf(11));
         return CompletableFuture.completedFuture(restTemplate.getForObject(url, BigInteger.class));
     }
 }

@@ -9,5 +9,4 @@ public class NonBlockingApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(NonBlockingApplication.class, args);
 	}
-
 }

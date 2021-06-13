@@ -1,7 +1,9 @@
 package com.disertatie.nonblocking.controller;
 
+import com.disertatie.nonblocking.Repository.ReactiveCityRepository;
+import com.disertatie.nonblocking.Repository.ReactiveCountryRepository;
 import com.disertatie.nonblocking.algorithms.Algorithms;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,15 +14,18 @@ import reactor.core.publisher.Mono;
 
 import java.math.BigInteger;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-public class FluxAndMonoController {
+public class ReactiveController {
+    @Autowired
+    private ReactiveCountryRepository countryRepository;
+    @Autowired
+    private ReactiveCityRepository cityRepository;
+
     static Integer counter = 0;
 
     @GetMapping("/test1")
@@ -37,7 +42,7 @@ public class FluxAndMonoController {
                 });
     }
 
-    @GetMapping(value = "/test2")
+    @GetMapping("/test2")
     public Mono<ResponseEntity<BigInteger>> test2(@RequestParam Integer n) {
         System.out.println("[test2] Started: " + counter);
         int c = counter;
@@ -50,7 +55,7 @@ public class FluxAndMonoController {
                 });
     }
 
-    @GetMapping(value = "/test3")
+    @GetMapping("/test3")
     public Mono<ResponseEntity<BigInteger>> test3(@RequestParam Integer m, @RequestParam Integer n) {
         System.out.println("[test3] Started: " + counter);
         int c = counter;
@@ -63,7 +68,7 @@ public class FluxAndMonoController {
                 });
     }
 
-    @GetMapping(value = "/test4")
+    @GetMapping("/test4")
     public Mono<ResponseEntity<BigInteger>> test4(@RequestParam Integer m, @RequestParam Integer n, @RequestParam String ip) {
         System.out.println("[test4] Started: " + counter);
         int c = counter;
@@ -77,6 +82,17 @@ public class FluxAndMonoController {
                     return x;
                 });
     }
+
+    @GetMapping("/test5")
+    public Mono<ResponseEntity<List<String>>> test5(@RequestParam(name = "country") String countryName) {
+        return Mono.defer(() -> countryRepository.findOneByName(countryName))
+                .map(country -> cityRepository.findAllByCountryId(country.id))
+                .flatMap(Flux::collectList)
+                .map(cities -> cities.stream().map(city -> city.name).collect(Collectors.toList()))
+                .map(cities -> new ResponseEntity<>(cities, OK));
+
+    }
+
 
     private Mono<BigInteger> callSecondServer(BigInteger ackermannResponse, String ip) {
         WebClient webClient = WebClient.create("http://" + ip + ":8081");
