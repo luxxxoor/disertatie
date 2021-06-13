@@ -16,11 +16,11 @@ import io.undertow.Handlers;
 public class MiddlewareApplication {
     public static void main(String[] args) {
         var tomcatBuilder = makeBuilder(8080, MiddlewareApplication.class)
-                .properties("middleware.type=SERVLET")
+                .properties("middleware.type=BLOCKING")
                 .web(WebApplicationType.SERVLET);
 
         var nettyBuilder = makeBuilder(8081, MiddlewareApplication.class)
-                .properties("middleware.type=REACTIVE")
+                .properties("middleware.type=NON_BLOCKING")
                 .web(WebApplicationType.REACTIVE);
 
         tomcatBuilder.run(args);
