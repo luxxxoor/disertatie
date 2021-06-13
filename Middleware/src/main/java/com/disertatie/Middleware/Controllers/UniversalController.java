@@ -1,4 +1,4 @@
-package com.disertatie.Middleware.UniversalControllers;
+package com.disertatie.Middleware.Controllers;
 
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
