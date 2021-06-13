@@ -22,7 +22,10 @@ public class FluidIOMapping {
     }
 
     public static <T> Mono<T> fluidHandle(Mono<T> obj) {
-        if (Objects.equals(environment.getProperty("middleware.type"), "SERVLET")) {
+        var middlewareType = environment.getProperty("middleware.type");
+        System.out.println("From fluidHandle: " + middlewareType);
+
+        if (Objects.equals(middlewareType, "SERVLET")) {
             return Mono.just(obj.block());
         }
         return obj;

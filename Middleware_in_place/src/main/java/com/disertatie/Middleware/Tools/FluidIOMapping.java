@@ -2,12 +2,8 @@ package com.disertatie.Middleware.Tools;
 
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
-
-import javax.annotation.PostConstruct;
 
 import com.google.common.collect.EvictingQueue;
 import java.time.Duration;
@@ -16,21 +12,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
 @Component
 public class FluidIOMapping {
-    @Autowired
-    private Environment autowiredEnvironment;
-
-    private static Environment environment;
-
-    @PostConstruct
-    private void init() {
-        environment = autowiredEnvironment;
-    }
 
     private static String getRequestKey(long depth) {
         // return obj.getClass().getEnclosingMethod().getName();
