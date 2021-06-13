@@ -1,4 +1,4 @@
-package com.dizertatie.Middleware;
+package com.disertatie.Middleware;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

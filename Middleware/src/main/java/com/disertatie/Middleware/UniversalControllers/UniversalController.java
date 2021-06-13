@@ -1,4 +1,4 @@
-package com.dizertatie.Middleware.UniversalControllers;
+package com.disertatie.Middleware.UniversalControllers;
 
 import org.springframework.core.env.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
-import static com.dizertatie.Middleware.Tools.FluidIOMapping.fluidHandle;
+import static com.disertatie.Middleware.Tools.FluidIOMapping.fluidHandle;
 
 @RestController
 public class UniversalController

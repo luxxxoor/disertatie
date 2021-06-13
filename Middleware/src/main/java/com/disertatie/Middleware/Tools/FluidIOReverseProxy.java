@@ -1,4 +1,4 @@
-package com.dizertatie.Middleware.Tools;
+package com.disertatie.Middleware.Tools;
 
 import java.io.IOException;
 import java.net.URI;

@@ -34,11 +34,11 @@ public class ReactiveController {
         int c = counter;
         counter += 1;
 
-        return Mono.just(new ResponseEntity<>(c, OK))
+        return Mono.defer(() -> Mono.just(new ResponseEntity<>(c, OK)))
                 .delayElement(Duration.ofMillis(500))
-                .map((x)-> {
+                .map(element -> {
                     System.out.println("[test1] Finished: " + c);
-                    return x;
+                    return element;
                 });
     }
 
@@ -48,10 +48,10 @@ public class ReactiveController {
         int c = counter;
         counter += 1;
 
-        return Mono.just(new ResponseEntity<>(Algorithms.fibonacci(n), OK))
-                .map((x)-> {
+        return Mono.defer(() -> Mono.just(new ResponseEntity<>(Algorithms.fibonacci(n), OK)))
+                .map(element -> {
                     System.out.println("[test2] Finished: " + c);
-                    return x;
+                    return element;
                 });
     }
 
@@ -61,10 +61,10 @@ public class ReactiveController {
         int c = counter;
         counter += 1;
 
-        return Mono.just(new ResponseEntity<>(Algorithms.ack(m, n), OK))
-                .map((x)-> {
+        return Mono.defer(() -> Mono.just(new ResponseEntity<>(Algorithms.ack(m, n), OK)))
+                .map(element -> {
                     System.out.println("[test3] Finished: " + c);
-                   return x;
+                   return element;
                 });
     }
 
@@ -74,12 +74,12 @@ public class ReactiveController {
         int c = counter;
         counter += 1;
 
-        return Mono.just(Algorithms.ack(m, n))
-                .flatMap((result) -> callSecondServer(result, ip))
-                .map((response) -> new ResponseEntity<>(response, OK))
-                .map((x)-> {
+        return Mono.defer(() -> Mono.just(Algorithms.ack(m, n)))
+                .flatMap(result -> callSecondServer(result, ip))
+                .map(response -> new ResponseEntity<>(response, OK))
+                .map(element -> {
                     System.out.println("[test4] Finished: " + c);
-                    return x;
+                    return element;
                 });
     }
 
@@ -92,7 +92,6 @@ public class ReactiveController {
                 .map(cities -> new ResponseEntity<>(cities, OK));
 
     }
-
 
     private Mono<BigInteger> callSecondServer(BigInteger ackermannResponse, String ip) {
         WebClient webClient = WebClient.create("http://" + ip + ":8081");

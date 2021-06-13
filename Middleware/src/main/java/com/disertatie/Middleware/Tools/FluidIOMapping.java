@@ -1,4 +1,4 @@
-package com.dizertatie.Middleware.Tools;
+package com.disertatie.Middleware.Tools;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;

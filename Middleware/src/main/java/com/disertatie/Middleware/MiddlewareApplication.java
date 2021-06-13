@@ -1,6 +1,6 @@
-package com.dizertatie.Middleware;
+package com.disertatie.Middleware;
 
-import com.dizertatie.Middleware.Tools.FluidIOReverseProxy;
+import com.disertatie.Middleware.Tools.FluidIOReverseProxy;
 
 import java.net.URI;
 

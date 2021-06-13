@@ -1,4 +1,4 @@
-package com.dizertatie.Middleware.Configuration;
+package com.disertatie.Middleware.Configuration;
 
 import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
 import org.springframework.boot.web.reactive.server.ReactiveWebServerFactory;
