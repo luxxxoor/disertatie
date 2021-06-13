@@ -114,7 +114,7 @@ public class FluidIOReverseProxy implements ProxyClient {
             var duration = recordedTimes.get(requestKey).endRecording(recording);
             System.out.println(this.requestKey + " " + 
                                recording.getValue1().toString() + " " + 
-                               duration.toMillis() + "ms");
+                               duration.toNanos() + "nanos");
         }
 
         @Override
@@ -165,7 +165,7 @@ class MovingRecord {
     private RequestType getOtherRequestType(RequestType type) {
         switch (type) {
             case BLOCKING: return RequestType.NONBLOCKING;
-            case NONBLOCKING: return RequestType.NONBLOCKING;
+            case NONBLOCKING: return RequestType.BLOCKING;
 
             default:
                 return RequestType.NONE;
