@@ -40,7 +40,7 @@ public class FluidIOMapping {
             throw new IndexOutOfBoundsException("Stack is not that deep");
         var frame = possibleFrame.get();
         
-        return frame.getMethodName();
+        return frame.getClassName() + "::" + frame.getMethodName();
         // return exchange.getRequestMethod() + " : " + exchange.getRequestPath();
     }
     private static String getRequestKey() {
@@ -50,7 +50,7 @@ public class FluidIOMapping {
     private static final Map<String, MovingRecord> recordedTimes = new HashMap<>();
     private static Triplet<Instant, RequestType, String> startRecording() {
         String requestKey = getRequestKey();
-        // System.out.println(requestKey);
+        System.out.println(requestKey);
         if (! recordedTimes.containsKey(requestKey))
             recordedTimes.put(requestKey, new MovingRecord(3, 5));
 
