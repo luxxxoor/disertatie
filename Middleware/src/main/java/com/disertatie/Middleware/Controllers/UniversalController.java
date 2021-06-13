@@ -29,13 +29,13 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 public class UniversalController  {
     @Autowired
-    RpFluidIO fluidIO;
+    private RpFluidIO fluidIO;
     @Autowired
     private ReactiveCountryRepository reactiveCountryRepository;
     @Autowired
     private ReactiveCityRepository reactiveCityRepository;
 
-    static Integer counter = 0;
+    static private Integer counter = 0;
 
     @GetMapping("/test1")
     public Mono<ResponseEntity<Integer>> test1() {
@@ -102,6 +102,9 @@ public class UniversalController  {
 
     @GetMapping("/test5")
     public Mono<ResponseEntity<List<String>>> test5(@RequestParam(name = "country") String countryName) {
+        System.out.println("[test5] Started: " + counter);
+        int c = counter;
+        counter += 1;
         Supplier<ResponseEntity<List<String>>> blockingSupplier = () -> {
             try{
                 Class.forName("org.postgresql.Driver");
@@ -115,20 +118,26 @@ public class UniversalController  {
                 while(rs.next())
                     cities.add(rs.getString(1));
                 con.close();
+                System.out.println("[test5] Finished: " + c);
                 return new ResponseEntity<>(cities, OK);
             } catch(Exception e) {
             }
 
             List<String> cities = new ArrayList<>();
+            System.out.println("[test45] Failed: " + c);
             return new ResponseEntity<>(cities, OK);
         };
 
         Supplier<Mono<ResponseEntity<List<String>>>> nonblockingSupplier = () ->
                 Mono.defer(() -> reactiveCountryRepository.findOneByName(countryName))
-                .map(country -> reactiveCityRepository.findAllByCountryId(country.id))
-                .flatMap(Flux::collectList)
-                .map(cities -> cities.stream().map(city -> city.name).collect(Collectors.toList()))
-                .map(cities -> new ResponseEntity<>(cities, OK));
+                        .map(country -> reactiveCityRepository.findAllByCountryId(country.id))
+                        .flatMap(Flux::collectList)
+                        .map(cities -> cities.stream().map(city -> city.name).collect(Collectors.toList()))
+                        .map(cities -> new ResponseEntity<>(cities, OK))
+                        .map(element -> {
+                            System.out.println("[test5] Finished: " + c);
+                            return element;
+                        });
 
         return fluidIO.fluidSwitch(blockingSupplier, nonblockingSupplier);
     }
