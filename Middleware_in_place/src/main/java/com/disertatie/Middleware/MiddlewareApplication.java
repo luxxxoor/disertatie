@@ -1,14 +1,9 @@
 package com.disertatie.Middleware;
 
-import java.net.URI;
-
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-
-import io.undertow.Undertow;
-import io.undertow.Handlers;
 
 @SpringBootApplication(exclude = SpringDataWebAutoConfiguration.class)
 public class MiddlewareApplication {
