@@ -31,7 +31,7 @@ public class MiddlewareApplication {
                 URI.create("http://127.0.0.1:8081"));
 
         Undertow reverseProxy = Undertow.builder()
-                .addHttpListener(8083, "localhost")
+                .addHttpListener(8083, "0.0.0.0")
                 .setHandler(Handlers.proxyHandler(fluidIOReverseProxy))
                 .build();
         reverseProxy.start();
