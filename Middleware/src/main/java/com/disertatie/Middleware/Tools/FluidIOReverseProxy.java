@@ -26,17 +26,6 @@ import io.undertow.server.handlers.proxy.ProxyCallback;
 import io.undertow.server.handlers.proxy.ProxyClient;
 import io.undertow.server.handlers.proxy.ProxyConnection;
 
-
-/**
- * Start the ReverseProxy with an ImmutableMap of matching endpoints and a default
- *
- * Example:
- * mapping: ImmutableMap("api" -> "http://some-domain.com")
- * default: "http://default-domain.com"
- *
- * Request 1: localhost:8080/foo -> http://default-domain.com/foo
- * Request 2: localhost:8080/api/bar -> http://some-domain.com/bar
- */
 public class FluidIOReverseProxy implements ProxyClient {
     private static final ProxyTarget TARGET = new ProxyTarget() {};
 

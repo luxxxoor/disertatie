@@ -11,3 +11,8 @@ spring:
     url: r2dbc:postgresql://localhost:5432/dvdrental
     username: postgres
     password: root
+
+server:
+  undertow:
+    worker-threads: 3
+    io-threads: 3

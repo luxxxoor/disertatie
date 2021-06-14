@@ -61,7 +61,7 @@ public class FluidIO {
 
         Mono<T> modifiedMono = obj;
         if (requestType == RequestType.BLOCKING) {
-            modifiedMono = Mono.just(obj.block());
+            modifiedMono = Mono.just(obj.toProcessor().block());
         }
 
         modifiedMono = modifiedMono.doOnTerminate(() -> {

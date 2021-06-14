@@ -4,6 +4,7 @@ import com.disertatie.Middleware.Tools.FluidIOReverseProxy;
 
 import java.net.URI;
 
+import io.undertow.UndertowOptions;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
@@ -27,10 +28,11 @@ public class MiddlewareApplication {
         nettyBuilder.run(args);
 
         FluidIOReverseProxy fluidIOReverseProxy = new FluidIOReverseProxy(
-                URI.create("http://127.0.0.1:8080"),
-                URI.create("http://127.0.0.1:8081"));
+                URI.create("http://192.168.43.59:8080"),
+                URI.create("http://192.168.43.59:8081"));
 
         Undertow reverseProxy = Undertow.builder()
+                .setServerOption(UndertowOptions.NO_REQUEST_TIMEOUT, 60000)
                 .addHttpListener(8083, "0.0.0.0")
                 .setHandler(Handlers.proxyHandler(fluidIOReverseProxy))
                 .build();
