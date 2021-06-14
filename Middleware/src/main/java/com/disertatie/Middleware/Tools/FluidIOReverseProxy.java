@@ -122,104 +122,105 @@ public class FluidIOReverseProxy implements ProxyClient {
             callback.failed(exchange);
         }
     }
-}
 
-enum RequestType {
-    NONE,
-    BLOCKING,
-    NONBLOCKING
-}
 
-class MovingRecord {
-    private EvictingQueue<Duration> blocking, nonblocking;
-    private Integer sameRequestsLimit,
-                    numberOfSameRequests = 0;
-    private RequestType lastRequestType = RequestType.NONE;
-    private Random random = new Random();
-
-    public MovingRecord(Integer requestsPerAverage, Integer sameRequestsLimit) {
-        blocking = EvictingQueue.create(requestsPerAverage);
-        nonblocking = EvictingQueue.create(requestsPerAverage);
-
-        this.sameRequestsLimit = sameRequestsLimit;
+    enum RequestType {
+        NONE,
+        BLOCKING,
+        NONBLOCKING
     }
 
-    public RequestType getSuggestedRequestType() {
-        return lastRequestType;
-    }
+    class MovingRecord {
+        private EvictingQueue<Duration> blocking, nonblocking;
+        private Integer sameRequestsLimit,
+                numberOfSameRequests = 0;
+        private RequestType lastRequestType = RequestType.NONE;
+        private Random random = new Random();
 
-    private RequestType getFasterApproachType() {
-        Duration averageForBlocking = averageDuration(blocking);
-        Duration averageForNonBlocking = averageDuration(nonblocking);
-        System.out.println("Average time (blocking): " + averageForBlocking.toNanos() + "ns");
-        System.out.println("Average time (nonblocking): " + averageForNonBlocking.toNanos() + "ns");
+        public MovingRecord(Integer requestsPerAverage, Integer sameRequestsLimit) {
+            blocking = EvictingQueue.create(requestsPerAverage);
+            nonblocking = EvictingQueue.create(requestsPerAverage);
 
-        if (averageForBlocking.equals(averageForNonBlocking)) {
-            return random.nextBoolean() ? RequestType.BLOCKING : RequestType.NONBLOCKING;
+            this.sameRequestsLimit = sameRequestsLimit;
         }
 
-        return 
-            averageForBlocking.compareTo(averageForNonBlocking) < 0 ?
-            RequestType.BLOCKING :
-            RequestType.NONBLOCKING;
-    }
-
-    private RequestType getOtherRequestType(RequestType type) {
-        switch (type) {
-            case BLOCKING: return RequestType.NONBLOCKING;
-            case NONBLOCKING: return RequestType.BLOCKING;
-
-            default:
-                return RequestType.NONE;
-        }
-    }
-
-    private Duration averageDuration(
-            EvictingQueue<Duration> durations, 
-            TemporalUnit unit)
-    {
-        if (durations.isEmpty()) return Duration.ZERO;
-
-        Long totalTime = durations
-                            .stream()
-                            .map(d -> d.get(unit))
-                            .reduce(Long.valueOf(0), Long::sum);
-
-        return Duration.of(totalTime/durations.size(), unit);
-    }
-    private Duration averageDuration(EvictingQueue<Duration> durations) {
-        return averageDuration(durations, ChronoUnit.NANOS);
-    }
-
-    public Pair<Instant, RequestType> startRecording() {
-        var startTime = Instant.now();
-
-        System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
-        if (numberOfSameRequests == sameRequestsLimit) {
-            return Pair.with(startTime, getOtherRequestType(lastRequestType));
+        public RequestType getSuggestedRequestType() {
+            return lastRequestType;
         }
 
-        return Pair.with(startTime, getFasterApproachType());
-    }
+        private RequestType getFasterApproachType() {
+            Duration averageForBlocking = averageDuration(blocking);
+            Duration averageForNonBlocking = averageDuration(nonblocking);
+            System.out.println("Average time (blocking): " + averageForBlocking.toNanos() + "ns");
+            System.out.println("Average time (nonblocking): " + averageForNonBlocking.toNanos() + "ns");
 
-    public Duration endRecording(Pair<Instant, RequestType> recording) {
-        Instant startTime = recording.getValue0();
-        RequestType requestType = recording.getValue1();
-        Duration requestTime = Duration.between(startTime, Instant.now());
+            if (averageForBlocking.equals(averageForNonBlocking)) {
+                return random.nextBoolean() ? RequestType.BLOCKING : RequestType.NONBLOCKING;
+            }
 
-        if (lastRequestType == RequestType.NONE || lastRequestType != requestType) {
-            lastRequestType = requestType;
-            numberOfSameRequests = 1;
-        } else /* lastRequestType == requestType */  {
-            numberOfSameRequests++;
+            return
+                    averageForBlocking.compareTo(averageForNonBlocking) < 0 ?
+                            RequestType.BLOCKING :
+                            RequestType.NONBLOCKING;
         }
 
-        EvictingQueue<Duration> queue = this.blocking;
-        if (requestType == RequestType.NONBLOCKING)
-            queue = this.nonblocking;
+        private RequestType getOtherRequestType(RequestType type) {
+            switch (type) {
+                case BLOCKING: return RequestType.NONBLOCKING;
+                case NONBLOCKING: return RequestType.BLOCKING;
 
-        queue.add(requestTime);
-        return requestTime;
+                default:
+                    return RequestType.NONE;
+            }
+        }
+
+        private Duration averageDuration(
+                EvictingQueue<Duration> durations,
+                TemporalUnit unit)
+        {
+            if (durations.isEmpty()) return Duration.ZERO;
+
+            Long totalTime = durations
+                    .stream()
+                    .map(d -> d.get(unit))
+                    .reduce(Long.valueOf(0), Long::sum);
+
+            return Duration.of(totalTime/durations.size(), unit);
+        }
+        private Duration averageDuration(EvictingQueue<Duration> durations) {
+            return averageDuration(durations, ChronoUnit.NANOS);
+        }
+
+        public Pair<Instant, RequestType> startRecording() {
+            var startTime = Instant.now();
+
+            System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
+            if (numberOfSameRequests.equals(sameRequestsLimit)) {
+                return Pair.with(startTime, getOtherRequestType(lastRequestType));
+            }
+
+            return Pair.with(startTime, getFasterApproachType());
+        }
+
+        public Duration endRecording(Pair<Instant, RequestType> recording) {
+            Instant startTime = recording.getValue0();
+            RequestType requestType = recording.getValue1();
+            Duration requestTime = Duration.between(startTime, Instant.now());
+
+            if (lastRequestType == RequestType.NONE || lastRequestType != requestType) {
+                lastRequestType = requestType;
+                numberOfSameRequests = 1;
+            } else /* lastRequestType == requestType */  {
+                numberOfSameRequests++;
+            }
+
+            EvictingQueue<Duration> queue = this.blocking;
+            if (requestType == RequestType.NONBLOCKING)
+                queue = this.nonblocking;
+
+            queue.add(requestTime);
+            return requestTime;
+        }
+
     }
-
 }

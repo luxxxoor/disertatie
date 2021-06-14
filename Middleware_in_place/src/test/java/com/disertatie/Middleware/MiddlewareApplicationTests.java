@@ -8,6 +8,8 @@ import reactor.core.publisher.Mono;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 @SpringBootTest
 class MiddlewareApplicationTests {
 
@@ -21,6 +23,10 @@ class MiddlewareApplicationTests {
 		AtomicInteger nonblockingCounter = new AtomicInteger(0);
 		Supplier<Void> blocking = () -> {
 			blockingCounter.addAndGet(1);
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException ignored) {
+			}
 			return null;
 		};
 		Supplier<Mono<Void>> nonblocking = () -> {
@@ -31,5 +37,8 @@ class MiddlewareApplicationTests {
 		for (int i = 0; i < 100; ++i) {
 			FluidIO.fluidSwitch(blocking, nonblocking);
 		}
+
+		System.out.println(blockingCounter.get());
+		System.out.println(nonblockingCounter.get());
 	}
 }
