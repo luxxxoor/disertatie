@@ -21,17 +21,17 @@ class MiddlewareApplicationTests {
 	void testForStarvation() {
 		AtomicInteger blockingCounter = new AtomicInteger(0);
 		AtomicInteger nonblockingCounter = new AtomicInteger(0);
-		Supplier<Void> blocking = () -> {
+		Supplier<Object> blocking = () -> {
 			blockingCounter.addAndGet(1);
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException ignored) {
 			}
-			return null;
+			return new Object();
 		};
-		Supplier<Mono<Void>> nonblocking = () -> {
+		Supplier<Mono<Object>> nonblocking = () -> {
 			nonblockingCounter.addAndGet(1);
-			return Mono.just(null);
+			return Mono.just(new Object());
 		};
 
 		for (int i = 0; i < 100; ++i) {
