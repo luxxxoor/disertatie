@@ -36,18 +36,65 @@ class MiddlewareApplicationTests {
 			return Mono.just(new Object());
 		};
 
-		List<Mono<Object>> monos = new ArrayList<>();
-
 		for (int i = 0; i < 100; ++i) {
-			var mono = FluidIO.fluidSwitch(blocking, nonblocking);
-//			mono.subscribe();
-			monos.add(FluidIO.fluidSwitch(blocking, nonblocking));
+			FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
 		}
 
-		monos.stream().forEach((m) -> m.subscribe());
-//		monos.forEach(Mono::subscribe);
+		assert blockingCounter.get() < nonblockingCounter.get();
+		assert blockingCounter.get() > 0;
+	}
 
-		System.out.println(blockingCounter.get());
-		System.out.println(nonblockingCounter.get());
+	@Test
+	void testForBalance() {
+		AtomicInteger blockingCounter = new AtomicInteger(0);
+		AtomicInteger nonblockingCounter = new AtomicInteger(0);
+
+		Supplier<Object> blocking = () -> {
+			blockingCounter.addAndGet(1);
+
+			return new Object();
+		};
+		Supplier<Mono<Object>> nonblocking = () -> {
+			nonblockingCounter.addAndGet(1);
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException ignored) {
+			}
+
+			return Mono.just(new Object());
+		};
+
+		Supplier<Object> blocking2 = () -> {
+			blockingCounter.addAndGet(1);
+			try {
+				Thread.sleep(300);
+			} catch (InterruptedException ignored) {
+			}
+
+			return new Object();
+		};
+		Supplier<Mono<Object>> nonblocking2 = () -> {
+			nonblockingCounter.addAndGet(1);
+
+			return Mono.just(new Object());
+		};
+
+		for (int i = 0; i < 6; ++i) {
+			FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
+		}
+
+		assert blockingCounter.get() > nonblockingCounter.get();
+
+		for (int i = 0; i < 30; ++i) {
+			FluidIO.fluidSwitch(blocking2, nonblocking2).subscribe();
+		}
+
+		assert nonblockingCounter.get() > blockingCounter.get();
+
+		for (int i = 0; i < 60; ++i) {
+			FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
+		}
+
+		assert blockingCounter.get() > nonblockingCounter.get();
 	}
 }
