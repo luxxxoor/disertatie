@@ -28,8 +28,8 @@ public class MiddlewareApplication {
         nettyBuilder.run(args);
 
         FluidIOReverseProxy fluidIOReverseProxy = new FluidIOReverseProxy(
-                URI.create("http://192.168.43.59:8080"),
-                URI.create("http://192.168.43.59:8081"));
+                URI.create("http://192.168.43.59:8080"), // change with localhost if same machine is used
+                URI.create("http://192.168.43.43:8081"));
 
         Undertow reverseProxy = Undertow.builder()
                 .setServerOption(UndertowOptions.NO_REQUEST_TIMEOUT, 60000)
