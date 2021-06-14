@@ -82,9 +82,16 @@ public class RestController {
 
     @GetMapping("/test5")
     public CompletableFuture<ResponseEntity<List<String>>> test5(@RequestParam(name = "country") String countryName) {
+        //System.out.println("[test4] Started: " + counter);
+        int c = counter;
+        counter += 1;
         return CompletableFuture.supplyAsync(() -> repository.findOneByName(countryName))
-                .thenApply((country) -> country.cities.stream().map((city) -> city.name).collect(Collectors.toList()))
-                .thenApply((cities) -> new ResponseEntity<>(cities, OK));
+                .thenApply(country -> country.cities.stream().map((city) -> city.name).collect(Collectors.toList()))
+                .thenApply(cities -> new ResponseEntity<>(cities, OK))
+                .thenApply(result -> {
+                    //System.out.println("[test5] Finished: " + c);
+                    return result;
+                });
     }
 
     @Async

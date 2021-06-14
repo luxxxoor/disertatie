@@ -90,7 +90,6 @@ public class ReactiveController {
                 .flatMap(Flux::collectList)
                 .map(cities -> cities.stream().map(city -> city.name).collect(Collectors.toList()))
                 .map(cities -> new ResponseEntity<>(cities, OK));
-
     }
 
     private Mono<BigInteger> callSecondServer(BigInteger ackermannResponse, String ip) {
