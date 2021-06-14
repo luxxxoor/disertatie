@@ -123,9 +123,9 @@ class QuickstartUser(HttpUser):
     #  def test2(self):
     #      self.client.get(f"/test2?n={randint(100, 15000)}");
 
-    #  @task
-    #  def test3(self):
-    #      self.client.get(f"/test3?m={randint(1, 3)}&n={randint(1, 10)}");
+    @task
+    def test3(self):
+        self.client.get(f"/test3?m={randint(1, 3)}&n={randint(1, 10)}");
 
     #  @task
     #  def test4(self):

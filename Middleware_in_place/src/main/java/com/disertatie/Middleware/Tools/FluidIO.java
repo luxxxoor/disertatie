@@ -161,7 +161,7 @@ public class FluidIO {
             var startTime = Instant.now();
 
             System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
-            if (numberOfSameRequests == sameRequestsLimit) {
+            if (numberOfSameRequests >= sameRequestsLimit) {
                 return Pair.with(startTime, lastRequestType.oppositeType());
             }
 
