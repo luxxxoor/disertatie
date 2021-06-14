@@ -195,7 +195,7 @@ public class FluidIOReverseProxy implements ProxyClient {
             var startTime = Instant.now();
 
             System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
-            if (numberOfSameRequests >= sameRequestsLimit) {
+            if (numberOfSameRequests.compareTo(sameRequestsLimit) >= 0) {
                 return Pair.with(startTime, getOtherRequestType(lastRequestType));
             }
 
