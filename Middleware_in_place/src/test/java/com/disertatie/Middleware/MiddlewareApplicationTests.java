@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -34,9 +36,16 @@ class MiddlewareApplicationTests {
 			return Mono.just(new Object());
 		};
 
+		List<Mono<Object>> monos = new ArrayList<>();
+
 		for (int i = 0; i < 100; ++i) {
-			FluidIO.fluidSwitch(blocking, nonblocking);
+			var mono = FluidIO.fluidSwitch(blocking, nonblocking);
+//			mono.subscribe();
+			monos.add(FluidIO.fluidSwitch(blocking, nonblocking));
 		}
+
+		monos.stream().forEach((m) -> m.subscribe());
+//		monos.forEach(Mono::subscribe);
 
 		System.out.println(blockingCounter.get());
 		System.out.println(nonblockingCounter.get());
