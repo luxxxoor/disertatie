@@ -2,10 +2,13 @@ package com.disertatie.Middleware.Tools;
 
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import com.google.common.collect.EvictingQueue;
+
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -17,8 +20,28 @@ import java.util.function.Supplier;
 
 @Component
 public class FluidIO {
+    @Value("${fluid.request-per-average}")
+    private Integer requestPerAverageProperty;
+
+    @Value("${fluid.same-requests-limit}")
+    private Integer sameRequestsLimitProperty;
+
+    // Default values
+    static Integer requestPerAverage = 3;
+    static Integer sameRequestsLimit = 5;
+
+    @PostConstruct
+    private void init() {
+        if (requestPerAverageProperty != null && requestPerAverageProperty > requestPerAverage) {
+            requestPerAverage = requestPerAverageProperty;
+        }
+
+        if (sameRequestsLimitProperty != null && sameRequestsLimitProperty > sameRequestsLimit) {
+            sameRequestsLimit = sameRequestsLimitProperty;
+        }
+    }
+
     private static String getRequestKey(long depth) {
-        // return obj.getClass().getEnclosingMethod().getName();
         StackWalker walker = StackWalker.getInstance();
         var possibleFrame = walker.walk(s -> s.skip(depth).findFirst());
         if (possibleFrame.isEmpty())
@@ -26,7 +49,6 @@ public class FluidIO {
         var frame = possibleFrame.get();
         
         return frame.getClassName() + "::" + frame.getMethodName();
-        // return exchange.getRequestMethod() + " : " + exchange.getRequestPath();
     }
     private static String getRequestKey() {
         return getRequestKey(4);
@@ -37,7 +59,7 @@ public class FluidIO {
         String requestKey = getRequestKey();
         System.out.println(requestKey);
         if (! recordedTimes.containsKey(requestKey))
-            recordedTimes.put(requestKey, new MovingRecord(3, 5));
+            recordedTimes.put(requestKey, new MovingRecord(requestPerAverage, sameRequestsLimit));
 
         MovingRecord record = recordedTimes.get(requestKey);
         var recording = record.startRecording();

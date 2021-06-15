@@ -16,3 +16,7 @@ server:
   undertow:
     worker-threads: 3
     io-threads: 3
+
+fluid:
+  request-per-average: 3
+  same-requests-limit: 5

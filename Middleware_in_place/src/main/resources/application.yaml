@@ -11,3 +11,7 @@ spring:
     url: r2dbc:postgresql://localhost:5432/dvdrental
     username: postgres
     password: root
+
+fluid:
+  request-per-average: 3
+  same-requests-limit: 5

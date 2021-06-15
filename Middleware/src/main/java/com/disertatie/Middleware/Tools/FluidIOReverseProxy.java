@@ -1,6 +1,6 @@
 package com.disertatie.Middleware.Tools;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.collect.EvictingQueue;
 
 import org.javatuples.Pair;
+import org.springframework.beans.factory.annotation.Value;
 import org.xnio.IoUtils;
 import org.xnio.OptionMap;
 
@@ -25,6 +26,7 @@ import io.undertow.server.ServerConnection;
 import io.undertow.server.handlers.proxy.ProxyCallback;
 import io.undertow.server.handlers.proxy.ProxyClient;
 import io.undertow.server.handlers.proxy.ProxyConnection;
+import org.yaml.snakeyaml.Yaml;
 
 public class FluidIOReverseProxy implements ProxyClient {
     private static final ProxyTarget TARGET = new ProxyTarget() {};
@@ -33,10 +35,35 @@ public class FluidIOReverseProxy implements ProxyClient {
     private final URI servletUri, reactiveUri;
     private final Map<String, MovingRecord> recordedTimes = new HashMap<>();
 
+    private Integer requestPerAverage = 3;
+    private Integer sameRequestsLimit = 5;
+
     public FluidIOReverseProxy(URI servletUri, URI reactiveUri) {
         this.client = UndertowClient.getInstance();
         this.servletUri = servletUri;
         this.reactiveUri = reactiveUri;
+
+        try {
+            InputStreamReader inputStream = new InputStreamReader(Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResourceAsStream("application.yaml"));
+            Yaml yaml = new Yaml();
+            Map<String, Object> data = yaml.load(inputStream);
+            Integer requestPerAverageProperty = (Integer) ((Map)data.get("fluid")).get("request-per-average");
+            Integer sameRequestsLimitProperty = (Integer) ((Map)data.get("fluid")).get("same-requests-limit");
+
+            if (requestPerAverageProperty != null && requestPerAverageProperty > requestPerAverage) {
+                requestPerAverage = requestPerAverageProperty;
+            }
+
+            if (sameRequestsLimitProperty != null && sameRequestsLimitProperty > sameRequestsLimit) {
+                sameRequestsLimit = sameRequestsLimitProperty;
+            }
+
+            System.out.println(requestPerAverage);
+            System.out.println(sameRequestsLimit);
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -58,6 +85,8 @@ public class FluidIOReverseProxy implements ProxyClient {
     {
 
         String requestKey = getRequestKey(exchange);
+        System.out.println(requestPerAverage);
+        System.out.println(sameRequestsLimit);
         if (! recordedTimes.containsKey(requestKey))
             recordedTimes.put(requestKey, new MovingRecord(3, 5));
 
