@@ -23,90 +23,90 @@ class MiddlewareApplicationTests {
 	void contextLoads() {
 	}
 
-	@Test
-	void testForStarvation() {
-		AtomicInteger blockingCounter = new AtomicInteger(0);
-		AtomicInteger nonblockingCounter = new AtomicInteger(0);
-		Supplier<Object> blocking = () -> {
-			blockingCounter.addAndGet(1);
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException ignored) {
-			}
-			return new Object();
-		};
-		Supplier<Mono<Object>> nonblocking = () -> {
-			nonblockingCounter.addAndGet(1);
-			return Mono.just(new Object());
-		};
+    @Test
+    void testForStarvation() {
+        AtomicInteger blockingCounter = new AtomicInteger(0);
+        AtomicInteger nonblockingCounter = new AtomicInteger(0);
+        Supplier<Object> blocking = () -> {
+            blockingCounter.addAndGet(1);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException ignored) {
+            }
+            return new Object();
+        };
+        Supplier<Mono<Object>> nonblocking = () -> {
+            nonblockingCounter.addAndGet(1);
+            return Mono.just(new Object());
+        };
 
-		for (int i = 0; i < 100; ++i) {
-			FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
-		}
+        for (int i = 0; i < 100; ++i) {
+            FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
+        }
 
-		assert blockingCounter.get() < nonblockingCounter.get();
-		assert blockingCounter.get() > 0;
-	}
+        assert blockingCounter.get() < nonblockingCounter.get();
+        assert blockingCounter.get() > 0;
+    }
 
-	@Test
-	void testForBalance() {
-		AtomicInteger blockingCounter = new AtomicInteger(0);
-		AtomicInteger nonblockingCounter = new AtomicInteger(0);
+    @Test
+    void testForBalance() {
+        AtomicInteger blockingCounter = new AtomicInteger(0);
+        AtomicInteger nonblockingCounter = new AtomicInteger(0);
 
-		Supplier<Object> blocking = () -> {
-			blockingCounter.addAndGet(1);
+        Supplier<Object> blocking = () -> {
+            blockingCounter.addAndGet(1);
 
-			return new Object();
-		};
-		Supplier<Mono<Object>> nonblocking = () -> {
-			nonblockingCounter.addAndGet(1);
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException ignored) {
-			}
+            return new Object();
+        };
+        Supplier<Mono<Object>> nonblocking = () -> {
+            nonblockingCounter.addAndGet(1);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException ignored) {
+            }
 
-			return Mono.just(new Object());
-		};
+            return Mono.just(new Object());
+        };
 
-		Supplier<Object> blocking2 = () -> {
-			blockingCounter.addAndGet(1);
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException ignored) {
-			}
+        Supplier<Object> blocking2 = () -> {
+            blockingCounter.addAndGet(1);
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException ignored) {
+            }
 
-			return new Object();
-		};
-		Supplier<Mono<Object>> nonblocking2 = () -> {
-			nonblockingCounter.addAndGet(1);
+            return new Object();
+        };
+        Supplier<Mono<Object>> nonblocking2 = () -> {
+            nonblockingCounter.addAndGet(1);
 
-			return Mono.just(new Object());
-		};
+            return Mono.just(new Object());
+        };
 
-		for (int i = 0; i < 6; ++i) {
-			FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
-		}
+        for (int i = 0; i < 6; ++i) {
+            FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
+        }
 
-		assert blockingCounter.get() > nonblockingCounter.get();
+        assert blockingCounter.get() > nonblockingCounter.get();
 
-		for (int i = 0; i < 30; ++i) {
-			FluidIO.fluidSwitch(blocking2, nonblocking2).subscribe();
-		}
+        for (int i = 0; i < 30; ++i) {
+            FluidIO.fluidSwitch(blocking2, nonblocking2).subscribe();
+        }
 
-		assert nonblockingCounter.get() > blockingCounter.get();
+        assert nonblockingCounter.get() > blockingCounter.get();
 
-		for (int i = 0; i < 60; ++i) {
-			FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
-		}
+        for (int i = 0; i < 60; ++i) {
+            FluidIO.fluidSwitch(blocking, nonblocking).subscribe();
+        }
 
-		assert blockingCounter.get() > nonblockingCounter.get();
-	}
+        assert blockingCounter.get() > nonblockingCounter.get();
+    }
 
     @Test
     void testMovingRecordRandom() {
-        int tries = 1000;
-        double lowerBound = 0.4,
-               upperBound = 0.6;
+        int tries = 10000;
+        double lowerBound = 0.48,
+               upperBound = 0.52;
         Random random = new Random();
 
         MovingRecord m = new MovingRecord(10, 16);
