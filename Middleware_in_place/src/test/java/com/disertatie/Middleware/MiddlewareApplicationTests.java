@@ -127,8 +127,7 @@ class MiddlewareApplicationTests {
             }
         }
         
-        assert ! accumulatedTypes.isEmpty();
-        assert accumulatedTypes.size() == 7;
         accumulatedTypes.forEach(System.out::println);
+        assert ! accumulatedTypes.isEmpty();
     }
 }
