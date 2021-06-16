@@ -220,7 +220,7 @@ public class FluidIOReverseProxy implements ProxyClient {
             return Pair.with(startTime, getFasterApproachType());
         }
 
-        public Duration endRecording(Pair<Instant, RequestType> recording) {
+        synchronized public Duration endRecording(Pair<Instant, RequestType> recording) {
             Instant startTime = recording.getValue0();
             RequestType requestType = recording.getValue1();
             Duration requestTime = Duration.between(startTime, Instant.now());
