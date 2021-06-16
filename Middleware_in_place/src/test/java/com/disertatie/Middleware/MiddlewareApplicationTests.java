@@ -105,6 +105,8 @@ class MiddlewareApplicationTests {
     @Test
     void testMovingRecordRandom() {
         int tries = 1000;
+        double lowerBound = 0.4,
+               upperBound = 0.6;
         Random random = new Random();
 
         MovingRecord m = new MovingRecord(10, 16);
@@ -130,6 +132,7 @@ class MiddlewareApplicationTests {
         
         // accumulatedTypes.forEach(System.out::println);
         assert ! accumulatedTypes.isEmpty();
+        assert accumulatedTypes.size() == tries;
 
         long blockingCount = accumulatedTypes
                                 .stream()
@@ -143,7 +146,7 @@ class MiddlewareApplicationTests {
         double blockingChance = (double)blockingCount / tries;
         double nonblockingChance = (double)nonblockingCount / tries;
 
-        assert blockingChance > 0.4 && blockingChance < 0.6;
-        assert nonblockingChance > 0.4 && nonblockingChance < 0.6;
+        assert blockingChance > lowerBound && blockingChance < upperBound;
+        assert nonblockingChance > lowerBound && nonblockingChance < upperBound;
     }
 }
