@@ -31,8 +31,8 @@ public class MovingRecord {
     private RequestType getFasterApproachType() {
         Duration averageForBlocking = averageDuration(blocking);
         Duration averageForNonBlocking = averageDuration(nonblocking);
-        System.out.println("Average time (blocking): " + averageForBlocking.toNanos() + "ns");
-        System.out.println("Average time (nonblocking): " + averageForNonBlocking.toNanos() + "ns");
+        // System.out.println("Average time (blocking): " + averageForBlocking.toNanos() + "ns");
+        // System.out.println("Average time (nonblocking): " + averageForNonBlocking.toNanos() + "ns");
 
         if (averageForBlocking.equals(averageForNonBlocking)) {
             return random.nextBoolean() ? RequestType.BLOCKING : RequestType.NONBLOCKING;
@@ -64,7 +64,7 @@ public class MovingRecord {
     public Pair<Instant, RequestType> startRecording() {
         var startTime = Instant.now();
 
-        System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
+        // System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
         if (numberOfSameRequests.compareTo(sameRequestsLimit) >= 0) {
             return Pair.with(startTime, lastRequestType.oppositeType());
         }

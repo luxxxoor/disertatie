@@ -111,10 +111,11 @@ class MiddlewareApplicationTests {
         List<Pair<Instant, RequestType>> recordings = new ArrayList<>();
         List<RequestType> accumulatedTypes = new ArrayList<>();
 
-        for (int i=0; i<tries; ++i) {
+        for (int i=0; i<tries;) {
             boolean newRecording = random.nextBoolean();
 
             if (recordings.isEmpty() || newRecording) {
+                i++;
                 var recording = m.startRecording();
                 accumulatedTypes.add(recording.getValue1());
                 recordings.add(recording);
