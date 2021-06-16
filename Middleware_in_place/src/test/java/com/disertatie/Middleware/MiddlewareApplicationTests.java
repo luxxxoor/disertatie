@@ -19,10 +19,6 @@ import java.util.function.Supplier;
 @SpringBootTest
 class MiddlewareApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
-
     @Test
     void testForStarvation() {
         AtomicInteger blockingCounter = new AtomicInteger(0);
@@ -105,8 +101,8 @@ class MiddlewareApplicationTests {
     @Test
     void testMovingRecordRandom() {
         int tries = 10000;
-        double lowerBound = 0.48,
-               upperBound = 0.52;
+        double lowerBound = 0.45,
+               upperBound = 0.55;
         Random random = new Random();
 
         MovingRecord m = new MovingRecord(10, 16);
