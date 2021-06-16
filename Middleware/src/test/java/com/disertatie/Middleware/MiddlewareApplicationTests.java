@@ -6,14 +6,11 @@ import com.disertatie.Middleware.Tools.RequestType;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 @SpringBootTest
 class MiddlewareApplicationTests {
@@ -45,8 +42,7 @@ class MiddlewareApplicationTests {
                 m.endRecording(recording);
             }
         }
-        
-        // accumulatedTypes.forEach(System.out::println);
+
         assert ! accumulatedTypes.isEmpty();
         assert accumulatedTypes.size() == tries;
 

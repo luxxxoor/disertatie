@@ -52,9 +52,6 @@ public class FluidIOReverseProxy implements ProxyClient {
             if (sameRequestsLimitProperty != null && sameRequestsLimitProperty > sameRequestsLimit) {
                 sameRequestsLimit = sameRequestsLimitProperty;
             }
-
-            System.out.println(requestPerAverage);
-            System.out.println(sameRequestsLimit);
         } catch (Exception ignored) {
         }
     }
