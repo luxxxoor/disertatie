@@ -130,7 +130,6 @@ class MiddlewareApplicationTests {
             }
         }
         
-        // accumulatedTypes.forEach(System.out::println);
         assert ! accumulatedTypes.isEmpty();
         assert accumulatedTypes.size() == tries;
 
