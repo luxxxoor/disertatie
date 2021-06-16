@@ -128,7 +128,22 @@ class MiddlewareApplicationTests {
             }
         }
         
-        accumulatedTypes.forEach(System.out::println);
+        // accumulatedTypes.forEach(System.out::println);
         assert ! accumulatedTypes.isEmpty();
+
+        long blockingCount = accumulatedTypes
+                                .stream()
+                                .filter(x -> x.equals(RequestType.BLOCKING))
+                                .count();
+        long nonblockingCount = accumulatedTypes
+                                    .stream()
+                                    .filter(x -> x.equals(RequestType.NONBLOCKING))
+                                    .count();
+
+        double blockingChance = (double)blockingCount / tries;
+        double nonblockingChance = (double)nonblockingCount / tries;
+
+        assert blockingChance > 0.4 && blockingChance < 0.6;
+        assert nonblockingChance > 0.4 && nonblockingChance < 0.6;
     }
 }
