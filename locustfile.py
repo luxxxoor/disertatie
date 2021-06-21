@@ -121,20 +121,15 @@ class QuickstartUser(HttpUser):
 
     @task(10)
     def test2(self):
-        self.client.get(f"/test2?n={randint(100, 15000)}");
+        self.client.get(f"/test2?n={randint(100, 15000)}", name="test2")
 
     @task(1)
     def test3(self):
-        self.client.get(f"/test3?m={randint(1, 3)}&n={randint(1, 10)}");
-        time.sleep(5);
-
-    @task(10)
-    def test4(self):
-        pass
+        self.client.get(f"/test3?m={randint(1, 3)}&n={randint(1, 10)}", name="test3")
 
     @task(10)
     def test5(self):
         randindex = randint(0, len(countries)-1)
-        self.client.get(f"/test5?country={countries[randindex]}")
+        self.client.get(f"/test5?country={countries[randindex]}", name="test5")
 
 
