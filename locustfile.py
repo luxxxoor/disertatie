@@ -115,28 +115,26 @@ countries = [
 class QuickstartUser(HttpUser):
     wait_time = between(1, 2.5)
 
-    #  @task
-    #  def test1(self):
-    #      self.client.get("/test1")
+    @task(10)
+    def test1(self):
+        self.client.get("/test1")
 
-    #  @task
-    #  def test2(self):
-    #      self.client.get(f"/test2?n={randint(100, 15000)}");
+    @task(10)
+    def test2(self):
+        self.client.get(f"/test2?n={randint(100, 15000)}");
 
-    #  @task
-    #  def test3(self):
-    #      self.client.get(f"/test3?m={randint(1, 3)}&n={randint(1, 10)}");
-    #      time.sleep(5);
+    @task(1)
+    def test3(self):
+        self.client.get(f"/test3?m={randint(1, 3)}&n={randint(1, 10)}");
+        time.sleep(5);
 
-    #  @task
-    #  def test4(self):
-    #      pass
+    @task(10)
+    def test4(self):
+        pass
 
-    @task
+    @task(10)
     def test5(self):
         randindex = randint(0, len(countries)-1)
         self.client.get(f"/test5?country={countries[randindex]}")
 
 
-    #  def on_start(self):
-    #      self.client.post("/login", json={"username":"foo", "password":"bar"})
