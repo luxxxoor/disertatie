@@ -77,7 +77,7 @@ public class MovingRecord {
             averageMutable.set((average*n + newTime) / (n+1));
         }
 
-        queue.add(duration);
+        synchronized(this) { queue.add(duration); }
     }
 
     public Pair<Instant, RequestType> startRecording() {
@@ -91,7 +91,7 @@ public class MovingRecord {
         return Pair.with(startTime, getFasterApproachType());
     }
 
-    synchronized public Duration endRecording(Pair<Instant, RequestType> recording) {
+    public Duration endRecording(Pair<Instant, RequestType> recording) {
         Instant startTime = recording.getValue0();
         RequestType requestType = recording.getValue1();
         Duration requestTime = Duration.between(startTime, Instant.now());

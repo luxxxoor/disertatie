@@ -52,7 +52,7 @@ public class FluidIO {
     private static final Map<String, MovingRecord> recordedTimes = new HashMap<>();
     private static Triplet<Instant, RequestType, String> startRecording() {
         String requestKey = getRequestKey();
-        System.out.println(requestKey);
+        // System.out.println(requestKey);
         if (! recordedTimes.containsKey(requestKey))
             recordedTimes.put(requestKey, new MovingRecord(requestPerAverage, sameRequestsLimit));
 
