@@ -8,23 +8,6 @@ import com.google.common.collect.EvictingQueue;
 
 import org.javatuples.Pair;
 
-class Mutable<T> {
-    protected T value;
-
-    public Mutable(T value) {
-        set(value);
-    }
-
-    public T get() {
-        return value;
-    }
-
-    public void set(T value) {
-        this.value = value;
-    }
-
-}
-
 public class MovingRecord {
     private Mutable<Long> blockingAverage = new Mutable<>(0l),
                            nonblockingAverage = new Mutable<>(0l);
@@ -83,7 +66,6 @@ public class MovingRecord {
     public Pair<Instant, RequestType> startRecording() {
         var startTime = Instant.now();
 
-        // System.out.println(numberOfSameRequests + " / " + sameRequestsLimit);
         if (numberOfSameRequests.compareTo(sameRequestsLimit) >= 0) {
             return Pair.with(startTime, lastRequestType.oppositeType());
         }
@@ -108,4 +90,20 @@ public class MovingRecord {
         return requestTime;
     }
 
+    static class Mutable<T> {
+        protected T value;
+
+        public Mutable(T value) {
+            set(value);
+        }
+
+        public T get() {
+            return value;
+        }
+
+        public void set(T value) {
+            this.value = value;
+        }
+
+    }
 }

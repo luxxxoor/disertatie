@@ -48,7 +48,7 @@ public class UniversalController {
                     return element;
                 });
 
-        return FluidIO.fluidHandle(mono);
+        return FluidIO.fluidHandle(mono, "/test1");
     }
 
     @GetMapping("/test2")
@@ -63,7 +63,7 @@ public class UniversalController {
                     return element;
                 });
 
-        return FluidIO.fluidHandle(mono);
+        return FluidIO.fluidHandle(mono, "/test2");
     }
 
     @GetMapping("/test3")
@@ -78,7 +78,7 @@ public class UniversalController {
                     return element;
                 });
 
-        return FluidIO.fluidHandle(mono);
+        return FluidIO.fluidHandle(mono, "/test3");
     }
 
     @GetMapping("/test4")
@@ -95,7 +95,7 @@ public class UniversalController {
                     return element;
                 });
 
-        return FluidIO.fluidHandle(mono);
+        return FluidIO.fluidHandle(mono, "/test4");
     }
 
     @GetMapping("/test5")
@@ -137,7 +137,7 @@ public class UniversalController {
                             return element;
                         });
 
-        return FluidIO.fluidSwitch(blockingSupplier, nonblockingSupplier);
+        return FluidIO.fluidSwitch(blockingSupplier, nonblockingSupplier, "/test5");
     }
 
     private Mono<BigInteger> callSecondServer(BigInteger ackermannResponse, String ip) {

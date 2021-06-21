@@ -50,9 +50,10 @@ public class FluidIO {
     }
 
     private static final Map<String, MovingRecord> recordedTimes = new HashMap<>();
-    private static Triplet<Instant, RequestType, String> startRecording() {
-        String requestKey = getRequestKey();
-        // System.out.println(requestKey);
+    private static Triplet<Instant, RequestType, String> startRecording(String requestKey) {
+        if (requestKey == null) {
+            requestKey = getRequestKey();
+        }
         if (! recordedTimes.containsKey(requestKey))
             recordedTimes.put(requestKey, new MovingRecord(requestPerAverage, sameRequestsLimit));
 
@@ -72,8 +73,8 @@ public class FluidIO {
         return record.endRecording(recording);
     }
 
-    public static <T> Mono<T> fluidHandle(Mono<T> obj) {
-        final var identifier = startRecording();
+    public static <T> Mono<T> fluidHandle(Mono<T> obj, String requestKey) {
+        final var identifier = startRecording(requestKey);
         var requestType = identifier.getValue1();
 
         Mono<T> modifiedMono = obj;
@@ -88,8 +89,12 @@ public class FluidIO {
         return modifiedMono;
     }
 
-    public static <T> Mono<T> fluidSwitch(Supplier<T> onBlocking, Supplier<Mono<T>> onNonblocking) {
-        final var identifier = startRecording();
+    public static <T> Mono<T> fluidHandle(Mono<T> obj) {
+        return fluidHandle(obj, null);
+    }
+
+    public static <T> Mono<T> fluidSwitch(Supplier<T> onBlocking, Supplier<Mono<T>> onNonblocking, String requestKey) {
+        final var identifier = startRecording(requestKey);
         var requestType = identifier.getValue1();
 
         Mono<T> modifiedMono;
@@ -104,5 +109,9 @@ public class FluidIO {
         });
 
         return modifiedMono;
+    }
+
+    public static <T> Mono<T> fluidSwitch(Supplier<T> onBlocking, Supplier<Mono<T>> onNonblocking) {
+        return fluidSwitch(onBlocking, onNonblocking, null);
     }
 }
