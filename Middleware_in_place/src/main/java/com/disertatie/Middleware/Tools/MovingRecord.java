@@ -2,15 +2,32 @@ package com.disertatie.Middleware.Tools;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.Random;
 
 import com.google.common.collect.EvictingQueue;
 
 import org.javatuples.Pair;
 
+class Mutable<T> {
+    protected T value;
+
+    public Mutable(T value) {
+        set(value);
+    }
+
+    public T get() {
+        return value;
+    }
+
+    public void set(T value) {
+        this.value = value;
+    }
+
+}
+
 public class MovingRecord {
+    private Mutable<Long> blockingAverage = new Mutable<>(0l),
+                           nonblockingAverage = new Mutable<>(0l);
     private EvictingQueue<Duration> blocking, nonblocking;
     private Integer sameRequestsLimit,
             numberOfSameRequests = 0;
@@ -29,10 +46,8 @@ public class MovingRecord {
     }
 
     private RequestType getFasterApproachType() {
-        Duration averageForBlocking = averageDuration(blocking);
-        Duration averageForNonBlocking = averageDuration(nonblocking);
-        // System.out.println("Average time (blocking): " + averageForBlocking.toNanos() + "ns");
-        // System.out.println("Average time (nonblocking): " + averageForNonBlocking.toNanos() + "ns");
+        Long averageForBlocking = blockingAverage.get();
+        Long averageForNonBlocking = nonblockingAverage.get();
 
         if (averageForBlocking.equals(averageForNonBlocking)) {
             return random.nextBoolean() ? RequestType.BLOCKING : RequestType.NONBLOCKING;
@@ -44,21 +59,25 @@ public class MovingRecord {
                         RequestType.NONBLOCKING;
     }
 
-    private Duration averageDuration(
-            EvictingQueue<Duration> durations,
-            TemporalUnit unit)
-    {
-        if (durations.isEmpty()) return Duration.ZERO;
+    private void addToAverage(Duration duration, RequestType type) {
+        EvictingQueue<Duration> queue = blocking;
+        Mutable<Long> averageMutable = blockingAverage;
+        if (type == RequestType.NONBLOCKING) {
+            queue = nonblocking;
+            averageMutable = nonblockingAverage;
+        }
+        Integer n = queue.size();
 
-        Long totalTime = durations
-                .stream()
-                .map(d -> d.get(unit))
-                .reduce(Long.valueOf(0), Long::sum);
+        Long average = averageMutable.get();
+        Long newTime = duration.toNanos();
+        if (queue.remainingCapacity() == 0) {
+            Long removedTime = queue.peek().toNanos();
+            averageMutable.set(average - (removedTime/n) + (newTime/n));
+        } else {
+            averageMutable.set((average*n + newTime) / (n+1));
+        }
 
-        return Duration.of(totalTime/durations.size(), unit);
-    }
-    private Duration averageDuration(EvictingQueue<Duration> durations) {
-        return averageDuration(durations, ChronoUnit.NANOS);
+        queue.add(duration);
     }
 
     public Pair<Instant, RequestType> startRecording() {
@@ -84,11 +103,8 @@ public class MovingRecord {
             numberOfSameRequests++;
         }
 
-        EvictingQueue<Duration> queue = this.blocking;
-        if (requestType == RequestType.NONBLOCKING)
-            queue = this.nonblocking;
 
-        queue.add(requestTime);
+        addToAverage(requestTime, requestType);
         return requestTime;
     }
 
