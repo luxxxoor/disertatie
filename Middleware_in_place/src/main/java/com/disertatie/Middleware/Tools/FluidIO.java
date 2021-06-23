@@ -1,5 +1,6 @@
 package com.disertatie.Middleware.Tools;
 
+import lombok.SneakyThrows;
 import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 @Component
@@ -24,6 +28,8 @@ public class FluidIO {
     // Default values
     static Integer requestPerAverage = 3;
     static Integer sameRequestsLimit = 5;
+
+    static ExecutorService blockingThreadPool = Executors.newFixedThreadPool(100);
 
     @PostConstruct
     private void init() {
@@ -73,13 +79,14 @@ public class FluidIO {
         return record.endRecording(recording);
     }
 
+    @SneakyThrows
     public static <T> Mono<T> fluidHandle(Mono<T> obj, String requestKey) {
         final var identifier = startRecording(requestKey);
         var requestType = identifier.getValue1();
 
         Mono<T> modifiedMono = obj;
         if (requestType == RequestType.BLOCKING) {
-            modifiedMono = Mono.just(obj.toProcessor().block());
+            modifiedMono = Mono.fromFuture(CompletableFuture.supplyAsync(() -> obj.toFuture().join(), blockingThreadPool));
         }
 
         modifiedMono = modifiedMono.doOnTerminate(() -> {
