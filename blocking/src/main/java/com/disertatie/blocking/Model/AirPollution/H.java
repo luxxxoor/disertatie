@@ -12,37 +12,24 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "status",
-        "data"
+        "v"
 })
 @Generated("jsonschema2pojo")
-public class AirPollutionFeed {
+public class H {
 
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("data")
-    private Data data;
+    @JsonProperty("v")
+    private Integer v;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
+    @JsonProperty("v")
+    public Integer getV() {
+        return v;
     }
 
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @JsonProperty("data")
-    public Data getData() {
-        return data;
-    }
-
-    @JsonProperty("data")
-    public void setData(Data data) {
-        this.data = data;
+    @JsonProperty("v")
+    public void setV(Integer v) {
+        this.v = v;
     }
 
     @JsonAnyGetter
@@ -54,4 +41,5 @@ public class AirPollutionFeed {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+
 }

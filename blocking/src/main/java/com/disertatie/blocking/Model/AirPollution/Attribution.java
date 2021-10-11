@@ -1,8 +1,5 @@
 package com.disertatie.blocking.Model.AirPollution;
 
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -10,39 +7,56 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import javax.annotation.Generated;
+import java.util.HashMap;
+import java.util.Map;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "status",
-        "data"
+        "url",
+        "name",
+        "logo"
 })
 @Generated("jsonschema2pojo")
-public class AirPollutionFeed {
+public class Attribution {
 
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("data")
-    private Data data;
+    @JsonProperty("url")
+    private String url;
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("logo")
+    private String logo;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
+    @JsonProperty("url")
+    public String getUrl() {
+        return url;
     }
 
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
+    @JsonProperty("url")
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    @JsonProperty("data")
-    public Data getData() {
-        return data;
+    @JsonProperty("name")
+    public String getName() {
+        return name;
     }
 
-    @JsonProperty("data")
-    public void setData(Data data) {
-        this.data = data;
+    @JsonProperty("name")
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @JsonProperty("logo")
+    public String getLogo() {
+        return logo;
+    }
+
+    @JsonProperty("logo")
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     @JsonAnyGetter
@@ -54,4 +68,5 @@ public class AirPollutionFeed {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+
 }

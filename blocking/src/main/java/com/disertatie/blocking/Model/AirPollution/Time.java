@@ -12,37 +12,63 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "status",
-        "data"
+        "s",
+        "tz",
+        "v",
+        "iso"
 })
 @Generated("jsonschema2pojo")
-public class AirPollutionFeed {
+public class Time {
 
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("data")
-    private Data data;
+    @JsonProperty("s")
+    private String s;
+    @JsonProperty("tz")
+    private String tz;
+    @JsonProperty("v")
+    private Integer v;
+    @JsonProperty("iso")
+    private String iso;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
+    @JsonProperty("s")
+    public String getS() {
+        return s;
     }
 
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
+    @JsonProperty("s")
+    public void setS(String s) {
+        this.s = s;
     }
 
-    @JsonProperty("data")
-    public Data getData() {
-        return data;
+    @JsonProperty("tz")
+    public String getTz() {
+        return tz;
     }
 
-    @JsonProperty("data")
-    public void setData(Data data) {
-        this.data = data;
+    @JsonProperty("tz")
+    public void setTz(String tz) {
+        this.tz = tz;
+    }
+
+    @JsonProperty("v")
+    public Integer getV() {
+        return v;
+    }
+
+    @JsonProperty("v")
+    public void setV(Integer v) {
+        this.v = v;
+    }
+
+    @JsonProperty("iso")
+    public String getIso() {
+        return iso;
+    }
+
+    @JsonProperty("iso")
+    public void setIso(String iso) {
+        this.iso = iso;
     }
 
     @JsonAnyGetter
@@ -54,4 +80,5 @@ public class AirPollutionFeed {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+
 }

@@ -12,37 +12,63 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "status",
-        "data"
+        "avg",
+        "day",
+        "max",
+        "min"
 })
 @Generated("jsonschema2pojo")
-public class AirPollutionFeed {
+public class Pm25 {
 
-    @JsonProperty("status")
-    private String status;
-    @JsonProperty("data")
-    private Data data;
+    @JsonProperty("avg")
+    private Integer avg;
+    @JsonProperty("day")
+    private String day;
+    @JsonProperty("max")
+    private Integer max;
+    @JsonProperty("min")
+    private Integer min;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("status")
-    public String getStatus() {
-        return status;
+    @JsonProperty("avg")
+    public Integer getAvg() {
+        return avg;
     }
 
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
+    @JsonProperty("avg")
+    public void setAvg(Integer avg) {
+        this.avg = avg;
     }
 
-    @JsonProperty("data")
-    public Data getData() {
-        return data;
+    @JsonProperty("day")
+    public String getDay() {
+        return day;
     }
 
-    @JsonProperty("data")
-    public void setData(Data data) {
-        this.data = data;
+    @JsonProperty("day")
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    @JsonProperty("max")
+    public Integer getMax() {
+        return max;
+    }
+
+    @JsonProperty("max")
+    public void setMax(Integer max) {
+        this.max = max;
+    }
+
+    @JsonProperty("min")
+    public Integer getMin() {
+        return min;
+    }
+
+    @JsonProperty("min")
+    public void setMin(Integer min) {
+        this.min = min;
     }
 
     @JsonAnyGetter
@@ -54,4 +80,5 @@ public class AirPollutionFeed {
     public void setAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
     }
+
 }
