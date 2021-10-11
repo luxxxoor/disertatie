@@ -1,6 +1,27 @@
 package com.disertatie.blocking.Model.AirPollution;
 
-public class AirPollutionFeed {
-    private String success;
-    private AirPollutionDataFeed dataFeed;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import java.io.Serializable;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AirPollutionFeed implements Serializable {
+    private String status;
+    private AirPollutionDataFeed data;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public AirPollutionDataFeed getData() {
+        return data;
+    }
+
+    public void setData(AirPollutionDataFeed data) {
+        this.data = data;
+    }
 }
